@@ -1,0 +1,18 @@
+:host {
+  width: 80px;
+  height: 80px;
+  display: block;
+  cursor: pointer;
+  font-size: 64px;
+  overflow: hidden;
+  font-weight: bold;
+  line-height: 80px;
+  position: relative;
+  text-align: center;
+  background: {
+    size: 70%;
+    color: white;
+    position: center;
+    repeat: no-repeat;
+  }
+}
