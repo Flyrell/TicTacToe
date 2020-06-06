@@ -1,0 +1,12 @@
+:host {
+  top: 50%;
+  left: 50%;
+  display: grid;
+  grid-gap: 2px;
+  overflow: hidden;
+  position: absolute;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgb(47, 98, 182);
+  background-color: rgb(47, 98, 182);
+}
