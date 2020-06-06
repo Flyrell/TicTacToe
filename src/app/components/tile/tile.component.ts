@@ -4,12 +4,13 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import {
   Input,
   Output,
+  OnChanges,
   Component,
   ElementRef,
   EventEmitter,
   HostBinding,
   HostListener,
-  ChangeDetectionStrategy, OnChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
