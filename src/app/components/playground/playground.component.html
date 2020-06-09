@@ -1,0 +1,4 @@
+<app-tile *ngFor="let tile of tiles$ | async; trackBy: trackByGameId"
+          [tile]="tile"
+          (ngSelect)="onSelect(tile)">
+</app-tile>
