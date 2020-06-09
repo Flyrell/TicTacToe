@@ -34,6 +34,9 @@ export class TileComponent implements OnChanges {
   }
 
   @HostListener('click', [ '$event' ]) onClick(event: MouseEvent): void {
+    if (this.tile.player) {
+      return;
+    }
     this.ngSelect.emit();
     this.rippleEffect(event);
   }
