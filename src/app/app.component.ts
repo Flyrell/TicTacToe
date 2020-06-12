@@ -5,7 +5,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { newGame } from '@/app/store/actions/game.actions';
 import { getWinner } from '@/app/store/selectors/game.selectors';
 import { PreferencesComponent } from '@/app/components/preferences/preferences.component';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { WinnerComponent } from '@/app/components/winner/winner.component';
 
 @Component({
@@ -18,7 +18,8 @@ export class AppComponent implements OnDestroy {
   winnerSubscription$$ = this.store.pipe(
     select(getWinner),
     filter(winner => !!winner),
-  ).subscribe(winner => this.dialog.open(WinnerComponent, { data: winner }));
+    switchMap(winner => this.dialog.open(WinnerComponent, { data: winner }).afterClosed()),
+  ).subscribe(() => this.newGame());
 
   constructor(private store: Store<AppState>, private dialog: MatDialog) {}
 
