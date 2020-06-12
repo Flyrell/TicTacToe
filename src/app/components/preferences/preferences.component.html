@@ -1,0 +1,11 @@
+<form class="form" ngForm [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-form-field class="control" appearance="outline" floatLabel="always">
+    <mat-label>Playground size (tiles per side)</mat-label>
+    <input matInput type="number" formControlName="playgroundSize" placeholder="3x3">
+  </mat-form-field>
+  <mat-form-field class="control" appearance="outline" floatLabel="always">
+    <mat-label>Tiles in row to win</mat-label>
+    <input matInput type="number" formControlName="winningTiles" placeholder="3">
+  </mat-form-field>
+  <button mat-flat-button [disabled]="form.invalid" class="button">Submit</button>
+</form>
