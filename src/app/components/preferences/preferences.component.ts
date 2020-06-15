@@ -1,10 +1,10 @@
 import { AppState } from '@/app/store';
 import { select, Store } from '@ngrx/store';
 import { Component, OnInit } from '@angular/core';
-import { getPlaygroundSize, getWinningTiles } from '@/app/store/selectors/game.selectors';
+import { getPlaygroundSize, getTilesToWin } from '@/app/store/selectors/game.selectors';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first, withLatestFrom } from 'rxjs/operators';
-import { setSize, setWinningTiles } from '@/app/store/actions/game.actions';
+import { setSize, setTilesToWin } from '@/app/store/actions/game.actions';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -15,26 +15,26 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class PreferencesComponent implements OnInit {
 
   form: FormGroup = this.formBuilder.group({
-    winningTiles: [3, [ Validators.required ]],
+    tilesToWin: [3, [ Validators.required ]],
     playgroundSize: [3, [ Validators.required ]],
   });
-  winningTiles$ = this.store.pipe(select(getWinningTiles));
+  tilesToWin$ = this.store.pipe(select(getTilesToWin));
   playgroundSize$ = this.store.pipe(select(getPlaygroundSize));
 
   constructor(private store: Store<AppState>, private formBuilder: FormBuilder, private dialogRef: MatDialogRef<PreferencesComponent>) {}
 
   ngOnInit(): void {
     this.playgroundSize$.pipe(
-      withLatestFrom(this.winningTiles$),
+      withLatestFrom(this.tilesToWin$),
       first(),
-    ).subscribe(([ playgroundSize, winningTiles ]) => {
-      this.form.setValue({ playgroundSize, winningTiles }, { emitEvent: false });
+    ).subscribe(([ playgroundSize, tilesToWin ]) => {
+      this.form.setValue({ playgroundSize, tilesToWin }, { emitEvent: false });
     });
   }
 
   onSubmit(): void {
     this.store.dispatch(setSize({ size: +this.form.get('playgroundSize').value }));
-    this.store.dispatch(setWinningTiles({ winningTiles: +this.form.get('winningTiles').value }));
+    this.store.dispatch(setTilesToWin({ tilesToWin: +this.form.get('tilesToWin').value }));
     this.dialogRef.close();
   }
 }

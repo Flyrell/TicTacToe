@@ -9,6 +9,6 @@ export const getGameId = createSelector(getGameState, state => state.gameId);
 export const getColumns = createSelector(getGameState, state => state.columns);
 export const getDiagonals = createSelector(getGameState, state => state.diagonals);
 export const getPlaygroundSize = createSelector(getGameState, state => state.size);
-export const getWinningTiles = createSelector(getGameState, state => state.winningTiles);
+export const getTilesToWin = createSelector(getGameState, state => state.tilesToWin);
 export const getResult = createSelector(getGameState, (state) => ({winner: state.winner, draw: state.draw}));
 export const getCurrentPlayer = createSelector(getGameState, state => state.currentPlayer);

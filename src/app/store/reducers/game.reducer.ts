@@ -8,7 +8,7 @@ import {
   playerMove,
   setSize,
   setResult,
-  setWinningTiles,
+  setTilesToWin,
   updateTiles
 } from '@/app/store/actions/game.actions';
 
@@ -17,7 +17,7 @@ export interface GameState extends TileArrays {
   tiles: Tile[];
   gameId: number;
   players: Player[];
-  winningTiles: number;
+  tilesToWin: number;
   winner: Player | null;
   draw: boolean;
   currentPlayer: Player;
@@ -34,7 +34,7 @@ const createInitialTileArrays = (): TileArrays => ({
   diagonals: [],
 });
 
-const createInitialState = (size: number = 3, winningTiles: number = 3): GameState => {
+const createInitialState = (size: number = 3, tilesToWin: number = 3): GameState => {
   const gameId = Math.random();
   const players = createPlayers();
   const tileArrays = createInitialTileArrays();
@@ -47,7 +47,7 @@ const createInitialState = (size: number = 3, winningTiles: number = 3): GameSta
     players,
     winner: null,
     draw: false,
-    winningTiles,
+    tilesToWin,
     ...tileArrays,
     currentPlayer: players[randomPlayerIndex],
   };
@@ -57,9 +57,9 @@ const reducer = createReducer(
   createInitialState(),
   on(playerMove, state => state),
   on(setResult, (state, { winner, draw }) => ({ ...state, winner, draw })),
-  on(newGame, ({ winningTiles, size }) => createInitialState(size, winningTiles)),
-  on(setSize, ({ winningTiles }, { size }) => createInitialState(size, winningTiles)),
-  on(setWinningTiles, ({ size }, { winningTiles }) => createInitialState(size, winningTiles)),
+  on(newGame, ({ tilesToWin, size }) => createInitialState(size, tilesToWin)),
+  on(setSize, ({ tilesToWin }, { size }) => createInitialState(size, tilesToWin)),
+  on(setTilesToWin, ({ size }, { tilesToWin }) => createInitialState(size, tilesToWin)),
   on(updateTiles, (state, { tiles, tileArrays }) => ({ ...state, tiles, ...tileArrays })),
   on(nextPlayer, state => {
     const currentIndex = state.players.indexOf(state.currentPlayer);
