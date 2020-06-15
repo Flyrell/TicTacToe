@@ -5,8 +5,8 @@ import { select, Store } from '@ngrx/store';
 import { Player } from '@/model/player.model';
 import { map, withLatestFrom } from 'rxjs/operators';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { nextPlayer, playerMove, setWinner, updateTiles } from '@/app/store/actions/game.actions';
-import { getColumns, getCurrentPlayer, getDiagonals, getRows, getTiles, getWinningTiles } from '@/app/store/selectors/game.selectors';
+import { nextPlayer, playerMove, setResult, updateTiles } from '@/app/store/actions/game.actions';
+import { getColumns, getCurrentPlayer, getDiagonals, getRows, getTiles, getTilesToWin } from '@/app/store/selectors/game.selectors';
 
 @Injectable()
 export class GameEffects {
@@ -52,43 +52,60 @@ export class GameEffects {
     }),
   ));
 
-  checkWinnerOnUpdateTiles$ = createEffect(() => this.actions$.pipe(
+  checkResultOnUpdateTiles$ = createEffect(() => this.actions$.pipe(
     ofType(updateTiles),
-    withLatestFrom(this.store.pipe(select(getWinningTiles))),
-    map(([{ tile, tileArrays }, winningTiles]) => {
-      let winner = GameEffects.checkWinnerInArray(tileArrays.rows[tile.rowIndex], winningTiles);
+    withLatestFrom(
+      this.store.pipe(select(getTilesToWin)),
+      this.store.pipe(select(getTiles))
+    ),
+    map(([{ tile, tiles, tileArrays }, tilesToWin]) => {
+      let winner = GameEffects.checkWinnerInArray(tileArrays.rows[tile.rowIndex], tilesToWin);
       if (winner) {
-        return setWinner({ winner });
+        return setResult({ winner, draw: false });
       }
 
-      winner = GameEffects.checkWinnerInArray(tileArrays.columns[tile.columnIndex], winningTiles);
+      winner = GameEffects.checkWinnerInArray(tileArrays.columns[tile.columnIndex], tilesToWin);
       if (winner) {
-        return setWinner({ winner });
+        return setResult({ winner, draw: false });
       }
 
       for (const diagonalIndex of tile.diagonalIndexes) {
-        winner = GameEffects.checkWinnerInArray(tileArrays.diagonals[diagonalIndex], winningTiles);
+        winner = GameEffects.checkWinnerInArray(tileArrays.diagonals[diagonalIndex], tilesToWin);
         if (winner) {
-          return setWinner({ winner });
+          return setResult({ winner, draw: false });
         }
+      }
+
+      const draw = GameEffects.checkDrawInArray(tiles);
+      if (draw) {
+        return setResult({ winner: null, draw: true });
       }
 
       return nextPlayer();
     }),
   ));
 
-  private static checkWinnerInArray(array: Tile[], winningTiles: number): Player | null {
+  private static checkWinnerInArray(array: Tile[], tilesToWin: number): Player | null {
     let inRow: number = 1;
     let lastPlayer: Player | null = null;
     for (const tile of array) {
       inRow = lastPlayer === tile.player ? inRow + 1 : 1;
       lastPlayer = tile.player || null;
 
-      if (inRow === winningTiles) {
+      if (inRow === tilesToWin) {
         return lastPlayer;
       }
     }
     return null;
+  }
+
+  private static checkDrawInArray(array: Tile[]): boolean {
+    for (const tile of array) {
+      if (!tile.player) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static findAndReplace<T>(array: T[], oldItem: T, newItem: T) {
