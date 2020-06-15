@@ -1,0 +1,5 @@
+<p *ngIf="data.draw;else winnerEl" class="paragraph">Draw, try again!</p>
+<ng-template #winnerEl>
+  <p class="paragraph" >And the winner is... <img [src]="data.winner.icon" alt="Winner's icon"></p>
+</ng-template>
+<button mat-flat-button class="button" (click)="onClick()">New game</button>

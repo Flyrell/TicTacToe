@@ -3,10 +3,10 @@ import { AppState } from '@/app/store';
 import { MatDialog } from '@angular/material/dialog';
 import { Component, OnDestroy } from '@angular/core';
 import { newGame } from '@/app/store/actions/game.actions';
-import { getWinner } from '@/app/store/selectors/game.selectors';
+import { getResult } from '@/app/store/selectors/game.selectors';
 import { PreferencesComponent } from '@/app/components/preferences/preferences.component';
 import { filter, switchMap } from 'rxjs/operators';
-import { WinnerComponent } from '@/app/components/winner/winner.component';
+import { ResultComponent } from '@/app/components/result/result.component';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +15,16 @@ import { WinnerComponent } from '@/app/components/winner/winner.component';
 })
 export class AppComponent implements OnDestroy {
 
-  winnerSubscription$$ = this.store.pipe(
-    select(getWinner),
-    filter(winner => !!winner),
-    switchMap(winner => this.dialog.open(WinnerComponent, { data: winner }).afterClosed()),
+  resultSubscription$$ = this.store.pipe(
+    select(getResult),
+    filter(result => !!result.winner || result.draw),
+    switchMap((data) => this.dialog.open(ResultComponent, { data }).afterClosed()),
   ).subscribe(() => this.newGame());
 
   constructor(private store: Store<AppState>, private dialog: MatDialog) {}
 
   ngOnDestroy() {
-    this.winnerSubscription$$.unsubscribe();
+    this.resultSubscription$$.unsubscribe();
   }
 
   newGame(): void {

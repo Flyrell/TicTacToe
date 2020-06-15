@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WinnerComponent } from './winner.component';
+import { ResultComponent } from './result.component';
 import { MatButtonModule } from '@angular/material/button';
 
 
 
 @NgModule({
-  declarations: [WinnerComponent],
+  declarations: [ResultComponent],
     imports: [
         CommonModule,
         MatButtonModule
     ]
 })
-export class WinnerModule { }
+export class ResultModule { }
